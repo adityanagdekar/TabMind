@@ -1,17 +1,60 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => {
+  // Load env file based on `mode` in the current working directory.
+  const env = loadEnv(mode, process.cwd(), '');
 
-  build: {
+  return {
+    plugins: [
+      react(),
+      // Custom plugin to copy manifest.json to dist/
+      {
+        name: 'copy-manifest',
+        closeBundle() {
+          // Create correct manifest for dist folder
+          const manifest = {
+            manifest_version: 3,
+            name: "TabMind",
+            version: "1.0",
+            description: "Provides Semantic search over your Chrome history",
+            permissions: ["history", "storage", "activeTab", "scripting"],
+            background: {
+              service_worker: "background.js",
+              type: "module"
+            },
+            action: {
+              default_popup: "ui/index.html"
+            },
+            content_scripts: [{
+              matches: ["<all_urls>"],
+              js: ["content.js"]
+            }]
+          };
+
+          const fs = require('fs');
+          fs.writeFileSync(
+            resolve(__dirname, 'dist/manifest.json'),
+            JSON.stringify(manifest, null, 2)
+          );
+          console.log('Copied manifest.json to dist/');
+        }
+      }
+    ],
+
+    // Define global constants at build time
+    define: {
+      'import.meta.env.VITE_OPENAI_API_KEY': JSON.stringify(env.VITE_OPENAI_API_KEY),
+    },
+
+    build: {
     // Output to dist/ folder
     outDir: 'dist',
 
-    // Don't minify for easier debugging (optional, you can remove this)
-    minify: false,
+    // Minify to compress and obfuscate code
+    minify: true,
 
     rollupOptions: {
       input: {
@@ -41,10 +84,11 @@ export default defineConfig({
     },
   },
 
-  // Resolve paths
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'ui/src'),
+    // Resolve paths
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, 'ui/src'),
+      },
     },
-  },
+  };
 });

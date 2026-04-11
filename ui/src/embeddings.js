@@ -1,8 +1,12 @@
 const MODEL = "text-embedding-3-small";
-const API_KEY = import.meta.env.OPENAI_API_KEY;
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 // Converts any text into a vector
 export async function getEmbedding(text) {
+  if (!API_KEY) {
+    throw new Error("OpenAI API key not found. Please add VITE_OPENAI_API_KEY to your .env file.");
+  }
+
   const response = await fetch("https://api.openai.com/v1/embeddings", {
     method: "POST",
     headers: {
@@ -14,6 +18,11 @@ export async function getEmbedding(text) {
       model: MODEL,
     }),
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+  }
 
   const data = await response.json();
   return data.data[0].embedding; // array of 1536 numbers
