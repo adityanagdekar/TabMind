@@ -1,0 +1,21 @@
+.memories-view {
+  width: 100%;
+}
+
+.memories-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.memories-loading,
+.memories-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.memories-empty p {
+  margin: 0;
+}

@@ -1,4 +1,4 @@
-import "./ResultsList.css";
+import "../style/ResultsList.css";
 
 export default function ResultsList({ results }) {
   if (results.length === 0) return null;

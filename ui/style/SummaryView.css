@@ -1,0 +1,24 @@
+.summary-view {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-placeholder {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.summary-placeholder h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.summary-placeholder p {
+  font-size: 14px;
+  margin: 0;
+}

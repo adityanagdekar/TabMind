@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { saveApiKey, getApiKey, removeApiKey } from "../storage";
-import "./SettingsModal.css";
+import "../style/SettingsModal.css";
 
 export default function SettingsModal({ isOpen, onClose }) {
   const [apiKey, setApiKey] = useState("");
