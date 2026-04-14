@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { saveApiKey, getApiKey, removeApiKey } from "../storage";
+import "./SettingsModal.css";
 
 export default function SettingsModal({ isOpen, onClose }) {
   const [apiKey, setApiKey] = useState("");
@@ -83,38 +84,36 @@ export default function SettingsModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-6 w-[360px]">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Settings</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
-          >
-            ×
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2 className="modal-title">Settings</h2>
+          <button onClick={onClose} className="modal-close-button">
+            <svg className="modal-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            OpenAI API Key
-          </label>
+        <div className="modal-field">
+          <label className="modal-label">OpenAI API Key</label>
           <input
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             onFocus={handleInputFocus}
+            onKeyDown={(e) => e.key === "Enter" && handleSave()}
             placeholder="sk-proj-..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="modal-input"
             disabled={loading}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="modal-hint">
             Get your API key from{" "}
             <a
               href="https://platform.openai.com/api-keys"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
+              className="modal-link"
             >
               OpenAI Dashboard
             </a>
@@ -122,22 +121,16 @@ export default function SettingsModal({ isOpen, onClose }) {
         </div>
 
         {message && (
-          <div
-            className={`mb-4 p-2 rounded text-sm ${
-              message.type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
-          >
+          <div className={`modal-message ${message.type}`}>
             {message.text}
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="modal-actions">
           <button
             onClick={handleSave}
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            className="modal-button modal-button-primary"
           >
             {loading ? "Saving..." : "Save"}
           </button>
@@ -145,7 +138,7 @@ export default function SettingsModal({ isOpen, onClose }) {
             <button
               onClick={handleRemove}
               disabled={loading}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+              className="modal-button modal-button-secondary"
             >
               Remove
             </button>

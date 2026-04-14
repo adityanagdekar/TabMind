@@ -4,6 +4,7 @@ import ResultsList from "./components/ResultsList";
 import SettingsModal from "./components/SettingsModal";
 import { searchHistory } from "./embeddings";
 import { getAllEntries } from "./db";
+import "./App.css";
 
 export default function App() {
   const [results, setResults] = useState([]);
@@ -30,16 +31,16 @@ export default function App() {
   }
 
   return (
-    <div className="w-[400px] min-h-[300px] p-4 bg-white font-sans">
-      <div className="flex justify-between items-center mb-3">
-        <h1 className="text-lg font-semibold text-gray-800">TabMind</h1>
+    <div className="app-container">
+      <div className="app-header">
+        <h1 className="app-title">TabMind</h1>
         <button
           onClick={() => setShowSettings(true)}
-          className="text-gray-500 hover:text-gray-700 p-1"
+          className="settings-button"
           title="Settings"
         >
           <svg
-            className="w-5 h-5"
+            className="settings-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -59,9 +60,15 @@ export default function App() {
           </svg>
         </button>
       </div>
-      <SearchBar onSearch={handleSearch} loading={loading} />
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-      <ResultsList results={results} />
+
+      <div className="content-wrapper">
+        <SearchBar onSearch={handleSearch} loading={loading} />
+
+        {error && <div className="error-message">{error}</div>}
+
+        <ResultsList results={results} />
+      </div>
+
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
