@@ -44,7 +44,8 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  min-width: 200px;
+  width: 100%;
+  /* min-width: 200px; */
   background-color: var(--bg-primary);
   border: 1.5px solid var(--border-primary);
   border-radius: 8px;
@@ -83,4 +84,21 @@
   width: 16px;
   height: 16px;
   color: var(--primary-600);
+}
+
+.project-option.special {
+  gap: 8px;
+  color: var(--primary-600);
+  font-weight: 500;
+}
+
+.project-option.special:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-primary);
+  margin: 4px 0;
 }

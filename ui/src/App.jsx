@@ -6,7 +6,9 @@ import ChatView from "./components/views/ChatView";
 import SummaryView from "./components/views/SummaryView";
 import ProjectSelector from "./components/ProjectSelector";
 import SettingsModal from "./components/SettingsModal";
-import { ensureDefaultProject } from "./db";
+import CreateProjectModal from "./components/CreateProjectModal";
+import ManageProjectsModal from "./components/ManageProjectsModal";
+import { ensureDefaultProject, createProject } from "./db";
 import { saveActiveProjectId } from "./storage";
 import "./App.css";
 
@@ -14,6 +16,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("search");
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showCreateProject, setShowCreateProject] = useState(false);
+  const [showManageProjects, setShowManageProjects] = useState(false);
+  const [projectsRefreshTrigger, setProjectsRefreshTrigger] = useState(0);
 
   useEffect(() => {
     initializeProject();
@@ -27,6 +32,17 @@ export default function App() {
   async function handleProjectChange(projectId) {
     setActiveProjectId(projectId);
     await saveActiveProjectId(projectId);
+  }
+
+  async function handleCreateProject(name) {
+    const newProjectId = await createProject(name);
+    setActiveProjectId(newProjectId);
+    await saveActiveProjectId(newProjectId);
+    setProjectsRefreshTrigger(prev => prev + 1);
+  }
+
+  function handleProjectsChanged() {
+    setProjectsRefreshTrigger(prev => prev + 1);
   }
 
   function renderView() {
@@ -54,6 +70,9 @@ export default function App() {
           <ProjectSelector
             activeProjectId={activeProjectId}
             onProjectChange={handleProjectChange}
+            onNewProject={() => setShowCreateProject(true)}
+            onManageProjects={() => setShowManageProjects(true)}
+            refreshTrigger={projectsRefreshTrigger}
           />
           <button
             onClick={() => setShowSettings(true)}
@@ -91,6 +110,20 @@ export default function App() {
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
+      />
+
+      <CreateProjectModal
+        isOpen={showCreateProject}
+        onClose={() => setShowCreateProject(false)}
+        onCreate={handleCreateProject}
+      />
+
+      <ManageProjectsModal
+        isOpen={showManageProjects}
+        onClose={() => setShowManageProjects(false)}
+        activeProjectId={activeProjectId}
+        onProjectChange={handleProjectChange}
+        onProjectsChanged={handleProjectsChanged}
       />
     </div>
   );
