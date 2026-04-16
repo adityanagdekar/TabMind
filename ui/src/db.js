@@ -28,6 +28,13 @@ db.version(2).stores({
   });
 });
 
+// Version 3: Add messages table for chat
+db.version(3).stores({
+  entries: "++id, url, title, timestamp, projectId",
+  projects: "++id, name, createdAt",
+  messages: "++id, projectId, role, timestamp",
+});
+
 // Save a new page entry
 export async function saveEntry({ url, title, vector, timestamp, projectId, text }) {
   // Avoid duplicates — delete existing entry for same URL
@@ -118,4 +125,30 @@ export async function ensureDefaultProject() {
   }
 
   return activeId || projects[0].id;
+}
+
+// ==================== Chat Messages ====================
+
+// Save a chat message
+export async function saveMessage({ projectId, role, content, timestamp }) {
+  await db.messages.add({
+    projectId,
+    role, // "user" or "assistant"
+    content,
+    timestamp: timestamp || Date.now(),
+  });
+}
+
+// Get all messages for a specific project
+export async function getMessagesByProject(projectId) {
+  return await db.messages
+    .where("projectId")
+    .equals(projectId)
+    .sortBy("timestamp");
+}
+
+// Clear chat history for a project
+export async function clearChatHistory(projectId) {
+  await db.messages.where("projectId").equals(projectId).delete();
+  console.log(`[TabMind DB] Cleared chat history for project ${projectId}`);
 }
