@@ -4,10 +4,12 @@ Chrome extension for semantic search over your browsing history using AI embeddi
 
 ## Screenshots
 
-![Search View](docs/screenshots/search-view.png)
+<img src="docs/screenshots/search-view.png" alt="Search View" width="350" height="400">
+
 *Semantic search interface for natural language queries*
 
-![Memories View](docs/screenshots/memories-view.png)
+<img src="docs/screenshots/memories-view.png" alt="Memories View" width="350" height="400">
+
 *Timeline view of all indexed pages organized by project*
 
 ## What's Done
