@@ -66,5 +66,3 @@ VITE_OPENAI_API_KEY=your_key_here
 npm run build    # Rebuild after changes
 # Then reload extension in chrome://extensions
 ```
-
-See [CLAUDE.md](CLAUDE.md) for detailed architecture and development notes.
